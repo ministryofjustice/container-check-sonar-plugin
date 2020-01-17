@@ -2,9 +2,11 @@ package uk.gov.justice.digital.sonar.plugin.containercheck;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
-import static uk.gov.justice.digital.sonar.plugin.containercheck.base.ContainerCheckConstants.DOCKERFILE_PATH_PROPERTY;
+import static uk.gov.justice.digital.sonar.plugin.containercheck.ContainerCheckSensor.SENSOR_NAME;
 import static uk.gov.justice.digital.sonar.plugin.containercheck.base.ContainerCheckConstants.JSON_REPORT_PATH_PROPERTY;
+import static uk.gov.justice.digital.sonar.plugin.containercheck.base.ContainerCheckConstants.SKIP_PROPERTY;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -13,28 +15,29 @@ import java.nio.file.Paths;
 import java.util.function.Function;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoAnnotations;
+import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.sensor.SensorContext;
+import org.sonar.api.batch.sensor.internal.DefaultSensorDescriptor;
 import org.sonar.api.batch.sensor.internal.SensorContextTester;
-import org.sonar.api.config.Configuration;
 import org.sonar.api.config.internal.MapSettings;
 import org.sonar.api.scan.filesystem.PathResolver;
 import uk.gov.justice.digital.sonar.plugin.containercheck.reason.ContainerImageDependencyReason;
 import uk.gov.justice.digital.sonar.plugin.containercheck.reason.DependencyReason;
 
-@ExtendWith(MockitoExtension.class)
 class ContainerCheckSensorTest {
 
-    private ContainerCheckSensor containercheckSensor;
+    private ContainerCheckSensor containerCheckSensor;
 
     @Mock
     private PathResolver pathResolver;
+
+    @Mock
+    private InputFile inputFile;
 
     private static File sampleJsonReport;
     private SensorContextTester sensorContext;
@@ -48,20 +51,21 @@ class ContainerCheckSensorTest {
     @BeforeEach
     void beforeEach() {
 
+        MockitoAnnotations.initMocks(this);
+
         final MapSettings settings = new MapSettings();
         settings.setProperty(JSON_REPORT_PATH_PROPERTY, sampleJsonReport.getAbsolutePath());
-        settings.setProperty(DOCKERFILE_PATH_PROPERTY, "/Users/chris-moj/moj-github/container-check-sonar-plugin/target/test-classes/Dockerfile");
-        final Configuration config = settings.asConfig();
 
         sensorContext = SensorContextTester.create(new File(System.getProperty("user.dir")));
         sensorContext.setSettings(settings);
 
+        when(inputFile.isFile()).thenReturn(Boolean.TRUE);
+        when(inputFile.key()).thenReturn("TRIVY");
         final Function<SensorContext, DependencyReason> dependencyBuilder
-            = (InputFile) -> { return new ContainerImageDependencyReason(null); };
-        containercheckSensor = new ContainerCheckSensor(sensorContext.fileSystem(), pathResolver,  dependencyBuilder);
+            = (InputFile) -> new ContainerImageDependencyReason(inputFile);
+        containerCheckSensor = new ContainerCheckSensor(sensorContext.fileSystem(), pathResolver,  dependencyBuilder);
     }
 
-    @Disabled
     @DisplayName("Test simple execution where there are 5 ")
     @Test
     void shouldAddAnIssueForVulnerability() {
@@ -69,9 +73,54 @@ class ContainerCheckSensorTest {
         when(pathResolver.relativeFile(Mockito.any(File.class), anyString())).thenReturn(sampleJsonReport);
 
         // Act
-        containercheckSensor.execute(sensorContext);
+        containerCheckSensor.execute(sensorContext);
 
         // Assert
-        assertEquals(5, sensorContext.allIssues().size());
+        assertEquals(5, sensorContext.measures("TRIVY").size());
+    }
+
+    @DisplayName("Skip the sensor execution because of the property")
+    @Test
+    void skipBecauseOfProperty() {
+
+        final MapSettings settings = new MapSettings();
+        settings.setProperty(SKIP_PROPERTY, Boolean.TRUE.toString());
+        sensorContext.setSettings(settings);
+
+        // Act
+        containerCheckSensor.execute(sensorContext);
+
+        // Assert
+        assertEquals(0, sensorContext.measures("TRIVY").size());
+        verifyNoInteractions(pathResolver);
+    }
+
+    @DisplayName("Skip the sensor execution because there's no Dockerfile to hang vulnerabilities on")
+    @Test
+    void skipBecauseOfNoDockerfile() {
+
+        containerCheckSensor = new ContainerCheckSensor(sensorContext.fileSystem(), pathResolver, sensorContext);
+        // Act
+        containerCheckSensor.execute(sensorContext);
+
+        // Assert
+        assertEquals(0, sensorContext.measures("TRIVY").size());
+        verifyNoInteractions(pathResolver);
+    }
+
+    @DisplayName("Test toString")
+    @Test
+    void testToString() {
+        assertEquals(SENSOR_NAME, containerCheckSensor.toString());
+    }
+
+    @DisplayName("Test describe")
+    @Test
+    void testDescribe() {
+        final DefaultSensorDescriptor sensorDescriptor = new DefaultSensorDescriptor();
+
+        containerCheckSensor.describe(sensorDescriptor);
+
+        assertEquals(SENSOR_NAME, sensorDescriptor.name());
     }
 }

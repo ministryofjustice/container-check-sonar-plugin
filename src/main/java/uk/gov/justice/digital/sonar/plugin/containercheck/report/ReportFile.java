@@ -3,13 +3,13 @@ package uk.gov.justice.digital.sonar.plugin.containercheck.report;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Optional;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 
 public abstract class ReportFile {
+
     private static final Logger LOGGER = Loggers.get(ReportFile.class);
 
     private final File report;
@@ -36,19 +36,10 @@ public abstract class ReportFile {
         }
         if (!report.canRead()) {
             LOGGER.info("Container-Check {} report is not readable", report.getAbsolutePath());
-
             return Optional.empty();
         }
 
         return Optional.of(report);
     }
 
-    public String getReportContent() {
-        try {
-            return new String(Files.readAllBytes(report.toPath()), StandardCharsets.UTF_8);
-        } catch (final IOException e) {
-            LOGGER.warn("Could not read {}-Report", e);
-        }
-        return null;
-    }
 }

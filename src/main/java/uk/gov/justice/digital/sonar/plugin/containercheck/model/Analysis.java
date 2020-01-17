@@ -31,5 +31,4 @@ public class Analysis {
         this.vulnerabilities = vulnerabilities == null ? Collections.emptyList() : vulnerabilities;
     }
 
-
 }

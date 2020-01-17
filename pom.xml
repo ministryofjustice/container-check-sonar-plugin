@@ -13,6 +13,13 @@
     Invoked by sonar-scanner which knows where the running Sonar instance is.
   </description>
 
+  <scm>
+    <connection>scm:git:https://github.com/ministryofjustice/container-check-sonar-plugin</connection>
+    <developerConnection>scm:git:https://github.com/ministryofjustice/container-check-sonar-plugin</developerConnection>
+    <url>https://github.com/dependency-check/dependency-check-sonar-plugin</url>
+    <tag>HEAD</tag>
+  </scm>
+
   <properties>
     <sonar.version>7.9.2</sonar.version>
     <sonar.pluginClass>uk.gov.justice.digital.sonar.plugin.containercheck.ContainerCheckPlugin
@@ -109,19 +116,27 @@
         <artifactId>sonar-packaging-maven-plugin</artifactId>
         <version>1.18.0.372</version>
         <extensions>true</extensions>
-        <configuration>
-          <!-- the entry-point class that extends org.sonar.api.SonarPlugin -->
-          <!-- pluginClass></pluginClass -->
-
-          <!-- advanced properties can be set here. See paragraph "Advanced Build Properties". -->
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>de.jutzig</groupId>
+        <artifactId>github-release-plugin</artifactId>
         <configuration>
-          <source>9</source>
-          <target>9</target>
+          <releaseName>container-check-sonar-plugin-${project.version}</releaseName>
+          <description>Integrates Container-Check reports into SonarQube ${sonar.version} and above.</description>
+          <tag>${project.version}</tag>
+          <deleteRelease>true</deleteRelease>
+          <fileSets>
+            <fileSet>
+              <directory>${project.build.directory}</directory>
+              <includes>
+                <include>container-check-sonar-plugin-${project.version}.jar</include>
+              </includes>
+            </fileSet>
+          </fileSets>
         </configuration>
       </plugin>
     </plugins>

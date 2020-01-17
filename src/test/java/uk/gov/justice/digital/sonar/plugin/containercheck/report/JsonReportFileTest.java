@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.sonar.plugin.containercheck.report;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -27,7 +27,6 @@ class JsonReportFileTest
 {
     private FileSystem fileSystem;
     private PathResolver pathResolver;
-    private MapSettings settings;
     private Configuration config;
 
     @BeforeEach
@@ -36,7 +35,7 @@ class JsonReportFileTest
         this.fileSystem = new DefaultFileSystem(new File("./src/test/resources"));
         this.pathResolver = mock(PathResolver.class);
 
-        settings = new MapSettings();
+        final MapSettings settings = new MapSettings();
         settings.setProperty(ContainerCheckConstants.JSON_REPORT_PATH_PROPERTY, "trivy-sample.json");
         config = settings.asConfig();
     }
@@ -54,7 +53,6 @@ class JsonReportFileTest
 
         // Assert
         assertNotNull(jsonReportFile.getInputStream());
-        assertThat(jsonReportFile.getReportContent().trim()).startsWith("[");
     }
 
     @DisplayName("Get a file which does not exist.")
@@ -68,5 +66,26 @@ class JsonReportFileTest
         // Act
         assertThrows(FileNotFoundException.class,
             () -> JsonReportFile.getJsonReportFile(config, fileSystem, pathResolver));
+    }
+
+    @DisplayName("Get a file which is a directory.")
+    @Test
+    void testLoadReportFileIsDirectory()
+    {
+        // Arrange
+        final File jsonFile = Paths.get("./src/test/resources").toFile();
+        when(pathResolver.relativeFile(any(File.class), anyString())).thenReturn(jsonFile);
+
+        // Act
+        assertThrows(FileNotFoundException.class,
+            () -> JsonReportFile.getJsonReportFile(config, fileSystem, pathResolver));
+    }
+
+    @DisplayName("Passing null to check report.")
+    @Test
+    void testCheckReportWithNull()
+    {
+        // Act
+        assertFalse(JsonReportFile.checkReport(null).isPresent());
     }
 }

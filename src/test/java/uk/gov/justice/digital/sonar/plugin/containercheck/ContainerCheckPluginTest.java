@@ -21,7 +21,6 @@ package uk.gov.justice.digital.sonar.plugin.containercheck;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.sonar.api.Plugin;
 import org.sonar.api.SonarEdition;
@@ -31,16 +30,19 @@ import org.sonar.api.internal.PluginContextImpl;
 import org.sonar.api.internal.SonarRuntimeImpl;
 import org.sonar.api.utils.Version;
 
-@Disabled
 class ContainerCheckPluginTest
 {
-
     @Test
     public void testExtensions() {
-        SonarRuntime runtime = SonarRuntimeImpl.forSonarQube(Version.create(7, 9), SonarQubeSide.SCANNER, SonarEdition.COMMUNITY);
-        Plugin.Context context = new PluginContextImpl.Builder().setSonarRuntime(runtime).build();
-        ContainerCheckPlugin plugin = new ContainerCheckPlugin();
+        final SonarRuntime runtime = SonarRuntimeImpl.forSonarQube(Version.create(7, 9),
+                                                                    SonarQubeSide.SCANNER, SonarEdition.COMMUNITY);
+        final Plugin.Context context = new PluginContextImpl.Builder().setSonarRuntime(runtime).build();
+        final ContainerCheckPlugin plugin = new ContainerCheckPlugin();
+
+        // Act
         plugin.define(context);
-        assertEquals(9, context.getExtensions().size());
+
+        // Assert
+        assertEquals(7, context.getExtensions().size());
     }
 }

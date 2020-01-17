@@ -9,40 +9,19 @@ import uk.gov.justice.digital.sonar.plugin.containercheck.base.ContainerCheckCon
 
 public final class ContainerCheckConfiguration {
 
-  private ContainerCheckConfiguration() {
-    // Utility Class prevent instantiation
-  }
+    private ContainerCheckConfiguration() {
+        // Utility Class prevent instantiation
+    }
 
-  public static List<PropertyDefinition> getPropertyDefinitions() {
-    return Arrays.asList(
-        PropertyDefinition.builder(ContainerCheckConstants.SEVERITY_CRITICAL)
-            .subCategory(ContainerCheckConstants.SUB_CATEGORY_SEVERITIES)
-            .name("Critical")
-            .description("Minimum score for critical issues or -1 to deactivate critical issues.")
-            .defaultValue(Float.toString(ContainerCheckConstants.SEVERITY_CRITICAL_DEFAULT))
-            .type(PropertyType.FLOAT)
-            .build(),
-        PropertyDefinition.builder(ContainerCheckConstants.SEVERITY_MAJOR)
-            .subCategory(ContainerCheckConstants.SUB_CATEGORY_SEVERITIES)
-            .name("Major")
-            .description("Minimum score for major issues or -1 to deactivate major issues.")
-            .defaultValue(Float.toString(ContainerCheckConstants.SEVERITY_MAJOR_DEFAULT))
-            .type(PropertyType.FLOAT)
-            .build(),
-        PropertyDefinition.builder(ContainerCheckConstants.SEVERITY_MINOR)
-            .subCategory(ContainerCheckConstants.SUB_CATEGORY_SEVERITIES)
-            .name("Minor")
-            .description("Minimum score for minor issues or -1 to deactivate minor issues.")
-            .defaultValue(Float.toString(ContainerCheckConstants.SEVERITY_MINOR_DEFAULT))
-            .type(PropertyType.FLOAT)
-            .build(),
-        PropertyDefinition.builder(ContainerCheckConstants.SKIP_PROPERTY)
-            .subCategory("General")
-            .name("Skip")
-            .description("When enabled we skip this plugin.")
-            .defaultValue(Boolean.FALSE.toString())
-            .type(PropertyType.BOOLEAN)
-            .build()
-    );
-  }
+    public static List<PropertyDefinition> getPropertyDefinitions() {
+        return Arrays.asList(
+            PropertyDefinition.builder(ContainerCheckConstants.SKIP_PROPERTY)
+                .subCategory("General")
+                .name("Skip")
+                .description("When enabled we skip this plugin.")
+                .defaultValue(Boolean.FALSE.toString())
+                .type(PropertyType.BOOLEAN)
+                .build()
+        );
+    }
 }

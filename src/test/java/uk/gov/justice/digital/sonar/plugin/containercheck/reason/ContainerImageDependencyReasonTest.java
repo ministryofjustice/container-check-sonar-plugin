@@ -166,7 +166,6 @@ class ContainerImageDependencyReasonTest {
 
     private void verifySensorContext(final int invocations) {
         verify(sensorContext, times(invocations)).newExternalIssue();
-//        verify(sensorContext, times(invocations)).config();
         verifyNoMoreInteractions(sensorContext);
     }
 }

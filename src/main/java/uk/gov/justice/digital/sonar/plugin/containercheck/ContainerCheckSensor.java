@@ -13,6 +13,7 @@ import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.SensorDescriptor;
+import org.sonar.api.config.Configuration;
 import org.sonar.api.scan.filesystem.PathResolver;
 import org.sonar.api.scanner.sensor.ProjectSensor;
 import org.sonar.api.utils.log.Logger;
@@ -28,7 +29,7 @@ import uk.gov.justice.digital.sonar.plugin.containercheck.report.JsonReportFile;
 public class ContainerCheckSensor implements ProjectSensor {
 
     private static final Logger LOGGER = Loggers.get(ContainerCheckSensor.class);
-    private static final String SENSOR_NAME = "Container-Check";
+    static final String SENSOR_NAME = "Container-Check";
 
     private final FileSystem fileSystem;
     private final PathResolver pathResolver;
@@ -116,28 +117,28 @@ public class ContainerCheckSensor implements ProjectSensor {
 
     @Override
     public void execute(final SensorContext sensorContext) {
+        final Profiler profiler = Profiler.create(LOGGER);
+        profiler.startInfo("Process Container-Check report");
 
-        if (skipConditionsApply(sensorContext.config())) {
+        final DependencyReason dependencyReason = dependencyBuilder.apply(sensorContext);
+        if (skipConditionsApply(sensorContext.config(), dependencyReason)) {
             return;
         }
 
-        final Profiler profiler = Profiler.create(LOGGER);
-        profiler.startInfo("Process Container-Check report");
         final List<Analysis> analyses = parseAnalysis(sensorContext);
-        final DependencyReason dependencyReason = dependencyBuilder.apply(sensorContext);
         for (final Analysis analysis : analyses) {
             dependencyReason.addIssues(sensorContext, analysis);
         }
         profiler.stopInfo();
     }
 
-    boolean skipConditionsApply(final  org.sonar.api.config.Configuration configuration) {
+    boolean skipConditionsApply(final Configuration configuration, final DependencyReason dependencyReason) {
         boolean skip = false;
         if (configuration.getBoolean(SKIP_PROPERTY).orElse(Boolean.FALSE).booleanValue()) {
             LOGGER.info("Container-Check skipped, skip property {} set to true", SKIP_PROPERTY);
             skip = true;
         }
-        if (dependencyBuilder == null) {
+        if (dependencyReason == null) {
             LOGGER.info("Container-Check skipped, no Dockerfiles found.");
             skip = true;
         }
