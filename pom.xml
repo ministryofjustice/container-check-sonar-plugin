@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>uk.gov.digital.justice</groupId>
   <artifactId>container-check-sonar-plugin</artifactId>
   <packaging>sonar-plugin</packaging>
   <name>Container-Check Plugin for SonarQube</name>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
   <description>A Sonar plugin which will look at a trivy-generated container vulnerability scan
     output file in JSON format and transform and upload the data to a running sonar instance.
     Invoked by sonar-scanner which knows where the running Sonar instance is.
   </description>
 
   <scm>
+
     <connection>scm:git:https://github.com/ministryofjustice/container-check-sonar-plugin</connection>
     <developerConnection>scm:git:https://github.com/ministryofjustice/container-check-sonar-plugin</developerConnection>
-    <url>https://github.com/dependency-check/dependency-check-sonar-plugin</url>
-    <tag>HEAD</tag>
+    <url>https://github.com/ministryofjustice/container-check-sonar-plugin</url>
+    <tag>v0.0.1</tag>
   </scm>
 
   <properties>
@@ -120,25 +119,38 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
       </plugin>
       <plugin>
-        <groupId>de.jutzig</groupId>
-        <artifactId>github-release-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>3.0.0-M1</version>
         <configuration>
-          <releaseName>container-check-sonar-plugin-${project.version}</releaseName>
-          <description>Integrates Container-Check reports into SonarQube ${sonar.version} and above.</description>
-          <tag>${project.version}</tag>
-          <deleteRelease>true</deleteRelease>
-          <fileSets>
-            <fileSet>
-              <directory>${project.build.directory}</directory>
-              <includes>
-                <include>container-check-sonar-plugin-${project.version}.jar</include>
-              </includes>
-            </fileSet>
-          </fileSets>
+          <tagNameFormat>v@{project.version}</tagNameFormat>
+          <checkModificationExcludes>
+            <checkModificationExclude>pom.xml</checkModificationExclude>
+          </checkModificationExcludes>
         </configuration>
       </plugin>
+<!--      <plugin>-->
+<!--        <groupId>de.jutzig</groupId>-->
+<!--        <artifactId>github-release-plugin</artifactId>-->
+<!--        <version>1.3.0</version>-->
+<!--        <configuration>-->
+<!--          <releaseName>container-check-sonar-plugin-${project.version}</releaseName>-->
+<!--          <description>Integrates Container-Check reports into SonarQube ${sonar.version} and above.</description>-->
+<!--          <tag>${project.version}</tag>-->
+<!--          <deleteRelease>true</deleteRelease>-->
+<!--          <fileSets>-->
+<!--            <fileSet>-->
+<!--              <directory>${project.build.directory}</directory>-->
+<!--              <includes>-->
+<!--                <include>container-check-sonar-plugin-${project.version}.jar</include>-->
+<!--              </includes>-->
+<!--            </fileSet>-->
+<!--          </fileSets>-->
+<!--        </configuration>-->
+<!--      </plugin>-->
     </plugins>
   </build>
 </project>
