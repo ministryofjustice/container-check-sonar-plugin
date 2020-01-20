@@ -13,8 +13,8 @@
 
   <scm>
 
-    <connection>scm:git:git://github.com/ministryofjustice/container-check-sonar-plugin</connection>
-    <developerConnection>scm:git:git://github.com/ministryofjustice/container-check-sonar-plugin</developerConnection>
+    <connection>scm:git:https://github.com/ministryofjustice/container-check-sonar-plugin</connection>
+    <developerConnection>scm:git:https://github.com/ministryofjustice/container-check-sonar-plugin</developerConnection>
     <url>https://github.com/ministryofjustice/container-check-sonar-plugin</url>
     <tag>v0.0.1</tag>
   </scm>
@@ -116,6 +116,14 @@
         <artifactId>sonar-packaging-maven-plugin</artifactId>
         <version>1.18.0.372</version>
         <extensions>true</extensions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-scm-plugin</artifactId>
+        <version>1.11.2</version>
+        <configuration>
+          <connectionType>connection</connectionType>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
