@@ -5,14 +5,13 @@
   <artifactId>container-check-sonar-plugin</artifactId>
   <packaging>sonar-plugin</packaging>
   <name>Container-Check Plugin for SonarQube</name>
-  <version>0.0.1</version>
+  <version>0.0.1-SNAPSHOT</version>
   <description>A Sonar plugin which will look at a trivy-generated container vulnerability scan
     output file in JSON format and transform and upload the data to a running sonar instance.
     Invoked by sonar-scanner which knows where the running Sonar instance is.
   </description>
 
   <scm>
-
     <connection>scm:git:https://github.com/ministryofjustice/container-check-sonar-plugin</connection>
     <developerConnection>scm:git:https://github.com/ministryofjustice/container-check-sonar-plugin</developerConnection>
     <url>https://github.com/ministryofjustice/container-check-sonar-plugin</url>
