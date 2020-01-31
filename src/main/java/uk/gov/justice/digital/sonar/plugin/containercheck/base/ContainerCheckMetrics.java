@@ -12,16 +12,16 @@ public final class ContainerCheckMetrics implements Metrics {
 
   private static final String DOMAIN = "Container-Dependency-Check";
 
-  private static final String TOTAL_DEPENDENCIES_KEY = "total_dependencies";
-  private static final String VULNERABLE_DEPENDENCIES_KEY = "vulnerable_dependencies";
+  private static final String TOTAL_DEPENDENCIES_KEY = DOMAIN + "_total_dependencies";
+  private static final String VULNERABLE_DEPENDENCIES_KEY = DOMAIN + "_vulnerable_dependencies";
 
-  static final String TOTAL_VULNERABILITIES_KEY = "total_vulnerabilities";
-  static final String CRITICAL_SEVERITY_VULNS_KEY = "critical_severity_vulns";
-  static final String HIGH_SEVERITY_VULNS_KEY = "high_severity_vulns";
-  static final String MEDIUM_SEVERITY_VULNS_KEY = "medium_severity_vulns";
-  static final String LOW_SEVERITY_VULNS_KEY = "low_severity_vulns";
+  static final String TOTAL_VULNERABILITIES_KEY = DOMAIN + "_total_vulnerabilities";
+  static final String CRITICAL_SEVERITY_VULNS_KEY = DOMAIN + "_critical_severity_vulns";
+  static final String HIGH_SEVERITY_VULNS_KEY = DOMAIN + "_high_severity_vulns";
+  static final String MEDIUM_SEVERITY_VULNS_KEY = DOMAIN + "_medium_severity_vulns";
+  static final String LOW_SEVERITY_VULNS_KEY = DOMAIN + "_low_severity_vulns";
 
-  private static final String REPORT_KEY = "report";
+  private static final String REPORT_KEY = DOMAIN + "_report";
 
   public static final Metric<Integer> CRITICAL_SEVERITY_VULNS = new Metric.Builder(
       CRITICAL_SEVERITY_VULNS_KEY, "Critical Severity Vulnerabilities", Metric.ValueType.INT)
