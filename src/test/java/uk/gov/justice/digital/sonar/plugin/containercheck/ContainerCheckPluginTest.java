@@ -43,6 +43,6 @@ class ContainerCheckPluginTest
         plugin.define(context);
 
         // Assert
-        assertEquals(7, context.getExtensions().size());
+        assertEquals(6, context.getExtensions().size());
     }
 }
