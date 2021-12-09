@@ -24,7 +24,7 @@
     <sonar.pluginName>Container-Check</sonar.pluginName>
     <junit.jupiter.version>5.5.2</junit.jupiter.version>
     <spring.test.version>5.1.2.RELEASE</spring.test.version>
-    <jackson.version>2.9.8</jackson.version>
+    <jackson.version>2.9.10.8</jackson.version>
     <mockito.version>3.2.4</mockito.version>
     <lombok.version>1.18.10</lombok.version>
     <assertj.version>3.14.0</assertj.version>
